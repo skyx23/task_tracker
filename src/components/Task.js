@@ -1,11 +1,14 @@
 import React from 'react'
+import moment from 'moment';
 import {FaTimes} from 'react-icons/fa'
 import {FaClock} from 'react-icons/fa'
 import {GiCheckMark} from 'react-icons/gi'
 
 const Task = (props) => {
     return (
-        <div className={props.task.done?'task done':(`task ${props.task.reminder ? 'reminder':''}`)}>
+        <div 
+            className={props.task.done?'task done':(moment(props.task.date) < moment() ? 'task pending' : (`task ${props.task.reminder ? 'reminder':''}`))} 
+        >
             <h3 key={props.task.id}>
                 {props.task.text} 
                 <div>

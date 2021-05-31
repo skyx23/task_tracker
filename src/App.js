@@ -6,7 +6,7 @@ import './index.css';
 import AddTask from './components/AddTask';
 
 function App() {
-  const [tasks, setTasks] = useState([
+  let data = [
     {
       id: 1,
       text: 'First Task',
@@ -35,12 +35,27 @@ function App() {
       reminder: false,
       done: false,
     },
-  ]);
+  ]
+  const [tasks, setTasks] = useState([]);
 
   const [form , setForm] = useState(false)
 
   const toggleForm = () => {
     setForm(!form)
+  }
+
+  const addTask = (text,date,reminder) => {
+    setTasks([
+      ...tasks,{
+        id : tasks[tasks.length-1].id + 1,
+        text : text,
+        date : moment(date).format('DD MMM YYYY'),
+        reminder : reminder,
+        done:false
+      }
+    ])
+
+    setForm(false)
   }
 
   const deleteTask = (id) => {
@@ -73,8 +88,8 @@ function App() {
 
   return (
     <div className='container'>
-      <Header title='Task Tracker' toggleForm={toggleForm}/>
-      {form ? <AddTask/> : ''}
+      <Header title='Task Tracker' toggleForm={toggleForm} form={form}/>
+      {form ? <AddTask addTask={addTask}/> : ''}
       {tasks.length ? <Tasks tasks={tasks} ondelete={deleteTask} ontoggle={toggleReminder} ondone={taskDone}/> : <h3>No Tasks added</h3>}
     </div>
   );
