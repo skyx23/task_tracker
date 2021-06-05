@@ -4,7 +4,6 @@ const Tasks = (props) => {
     tass = tass.sort((a,b)=>{
         return new Date(b.date) - new Date(a.date)
     })
-    console.log(tass)
     return (
         <div >{tass?.map((task, index) => {
                 return <Task

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import moment from 'moment';
 import Header from './components/Header';
 import Tasks from './components/Tasks';
@@ -36,7 +36,7 @@ function App() {
       done: false,
     },
   ]
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(data);
 
   const [form , setForm] = useState(false)
 
@@ -45,16 +45,17 @@ function App() {
   }
 
   const addTask = (text,date,reminder) => {
+    let newtask = {
+      id : Math.floor(Math.random()*1000),
+      text : text,
+      date : moment(date).format('DD MMM YYYY'),
+      reminder : reminder,
+      done:false
+    }
+    console.log(newtask)
     setTasks([
-      ...tasks,{
-        id : tasks[tasks.length-1].id + 1,
-        text : text,
-        date : moment(date).format('DD MMM YYYY'),
-        reminder : reminder,
-        done:false
-      }
+      ...tasks,newtask
     ])
-
     setForm(false)
   }
 
