@@ -4,44 +4,31 @@ import Header from './components/Header';
 import Tasks from './components/Tasks';
 import './index.css';
 import AddTask from './components/AddTask';
+import {defaultData,defaultFormState} from './intialState' 
 
 function App() {
-  let data = [
-    {
-      id: 1,
-      text: 'First Task',
-      date: moment().format('DD MMM YYYY'),
-      reminder: false,
-      done: false,
-    },
-    {
-      id: 2,
-      text: 'Second Task',
-      date: moment().subtract(2, 'days').format('DD MMM YYYY'),
-      reminder: false,
-      done: false,
-    },
-    {
-      id: 3,
-      text: 'Third Task',
-      date: moment().add(1, 'weeks').format('DD MMM YYYY'),
-      reminder: false,
-      done: false,
-    },
-    {
-      id: 4,
-      text: 'Fourth Task',
-      date: moment().add(5, 'days').format('DD MMM YYYY'),
-      reminder: false,
-      done: false,
-    },
-  ]
-  const [tasks, setTasks] = useState(data);
 
-  const [form , setForm] = useState(false)
+  const [tasks, setTasks] = useState([]);
+  
+  const [form , setForm] = useState(defaultFormState)
+
+  useEffect(() => {
+  let dataFromStorage = localStorage.getItem('data')
+  if (dataFromStorage) {
+    setTasks(JSON.parse(dataFromStorage))
+  }else{
+    setTasks(defaultData)
+  }
+  let formStatefromStorage = localStorage.getItem('formState')
+  if(formStatefromStorage) {
+    setForm(JSON.parse(formStatefromStorage))
+  } 
+  },[])  
+  
 
   const toggleForm = () => {
     setForm(!form)
+    localStorage.setItem('formState',JSON.stringify(!form))
   }
 
   const addTask = (text,date,reminder) => {
@@ -56,11 +43,15 @@ function App() {
     setTasks([
       ...tasks,newtask
     ])
+    localStorage.setItem('data',JSON.stringify([...tasks,newtask]))
     setForm(false)
+    localStorage.setItem('formState',JSON.stringify(!form))
   }
 
   const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    let remainingTasks = tasks.filter((task) => task.id !== id)
+    setTasks(remainingTasks);
+    localStorage.setItem('data',JSON.stringify(remainingTasks))
   };
 
   const toggleReminder = (id) => {
@@ -91,7 +82,7 @@ function App() {
     <div className='container'>
       <Header title='Task Tracker' toggleForm={toggleForm} form={form}/>
       {form ? <AddTask addTask={addTask}/> : ''}
-      {tasks.length ? <Tasks tasks={tasks} ondelete={deleteTask} ontoggle={toggleReminder} ondone={taskDone}/> : <h3>No Tasks added</h3>}
+      <Tasks tasks={tasks} ondelete={deleteTask} ontoggle={toggleReminder} ondone={taskDone}/>
     </div>
   );
 }
